@@ -32,20 +32,11 @@ class has_next_window():
     else:
         return False
 
-"""
-pjs_path = 'C:/Users/tai.RD-WOODS/phantomjs-2.1.1-windows/bin/phantomjs'
-dcap = {
-    'marionette' : True
-}
-driver = webdriver.PhantomJS(executable_path=pjs_path, desired_capabilities=dcap)
-
-"""
-
 argvs = sys.argv
-worker_number=int(argvs[1])
+worker_number=int(argvs[2])
 #一覧ページ
 
-for worker_number_sub in range(worker_number,41,8):
+for worker_number_sub in range(worker_number,26,5):
 	profile = webdriver.FirefoxProfile()
 	profile.set_preference('browser.download.folderList',2) # custom location
 	profile.set_preference('browser.download.manager.showWhenStarting', False)
@@ -54,11 +45,10 @@ for worker_number_sub in range(worker_number,41,8):
 	driver = webdriver.Firefox(profile)
 	wait=WebDriverWait(driver,20)
 	alljobarray=[]
-	for pagenum in range((worker_number_sub-1)*2500,worker_number_sub*2500,10):
-		list_page="https://jp.indeed.com/jobs?q=&l="+str(urllib.parse.quote('横浜市'))+'&start='+str(pagenum)
+	for pagenum in range((worker_number_sub-1)*4000,worker_number_sub*4000,10):
+		list_page="https://jp.indeed.com/jobs?q=&l="+str(urllib.parse.quote(argvs[1]))+'&start='+str(pagenum)
 		driver.get(list_page)
 		wait.until(ec.presence_of_all_elements_located)
-		#driver.save_screenshot('screen'+str(pagenum)+'0.png')
 	#	sponsor	
 		sjobs=driver.find_elements_by_xpath("//div[contains(@class,'iaP')]/parent::div[@class='sjCapt']/preceding-sibling::a")
 		for sjob in sjobs:
@@ -95,7 +85,6 @@ for worker_number_sub in range(worker_number,41,8):
 				except:
 					jobarray.append('0')
 			else: 
-			#driver.save_screenshot('screen'+str(pagenum+s)+'s.png')
 				try:
 					jobarray.append(lxml.html.fromstring(driver.page_source).xpath("//div[@id='job_summary']/div[@class='jdSection grayBar'][1]/h1/text()")[0])
 				except:
@@ -123,7 +112,6 @@ for worker_number_sub in range(worker_number,41,8):
 			del jobarray
 			driver.close()
 			driver.switch_to_window(main_window)
-		#print(sj)
 		del sjobs
 	# 	organic
 		jobs=driver.find_elements_by_xpath("//div[contains(@class,'iaP')]/ancestor::table/preceding-sibling::h2[@class='jobtitle']/a")
@@ -161,7 +149,6 @@ for worker_number_sub in range(worker_number,41,8):
 				except:
 					jobarray.append('0')
 			else: 
-			#driver.save_screenshot('screen'+str(pagenum+s)+'s.png')
 				try:
 					jobarray.append(lxml.html.fromstring(driver.page_source).xpath("//div[@id='job_summary']/div[@class='jdSection grayBar'][1]/h1/text()")[0])
 				except:
@@ -195,5 +182,5 @@ for worker_number_sub in range(worker_number,41,8):
 	writer = pandas.ExcelWriter('結果'+str(worker_number_sub)+'.xlsx',engine="xlsxwriter")
 	d.to_excel(writer,index=False)
 	writer.save()
-	del alljobarray
+	del alljobarray,d,writer
 	driver.quit()
