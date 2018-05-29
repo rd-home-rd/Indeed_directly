@@ -7,6 +7,7 @@ import codecs
 import sys
 import urllib.parse
 import numpy
+import gc
 from time import sleep   
 import selenium.webdriver.support.ui as ui
 from selenium import webdriver
@@ -106,7 +107,7 @@ for worker_number_sub in range(worker_number,26,5):
 				except:
 					jobarray.append('0')
 			if jobarray in alljobarray:
-				print(jobarray)
+				pass
 			else: 
 				alljobarray.append(jobarray)
 			del jobarray
@@ -170,7 +171,7 @@ for worker_number_sub in range(worker_number,26,5):
 				except:
 					jobarray.append('0')
 			if jobarray in alljobarray:
-				print(jobarray)
+				pass
 			else: 
 				alljobarray.append(jobarray)
 			del jobarray
@@ -184,3 +185,4 @@ for worker_number_sub in range(worker_number,26,5):
 	writer.save()
 	del alljobarray,d,writer
 	driver.quit()
+	gc.collect()
